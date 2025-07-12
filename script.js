@@ -1,4 +1,4 @@
-// Load available voices
+speechSynthesis.onvoiceschanged = loadVoices;// Load available voices
 let voices = [];
 
 function loadVoices() {
