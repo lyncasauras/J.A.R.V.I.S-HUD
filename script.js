@@ -1,77 +1,62 @@
+// Load available voices
+let voices = [];
 
-const startButton = document.getElementById('start-btn');
-const speakButton = document.getElementById('speak-btn');
-const output = document.getElementById('output');
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  if (!voices.length) {
+    setTimeout(loadVoices, 100); // Retry if not ready
+  }
+}
+loadVoices();
 
-let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+// Speak function with natural tone
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.pitch = 1.1;
+  utterance.rate = 0.95;
+  utterance.volume = 1;
+  utterance.voice = voices.find(v => v.name.includes("UK") || v.name.includes("Male")) || voices[0];
+  speechSynthesis.speak(utterance);
+}
+
+// Voice recognition setup
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
 recognition.continuous = false;
+recognition.interimResults = false;
 recognition.lang = 'en-US';
 
-let maleVoice;
+// Trigger recognition manually (because of mobile/iOS restrictions)
+document.getElementById("mic-btn").addEventListener("click", () => {
+  recognition.start();
+});
 
-// Load voices and pick a male-sounding one
-function loadVoices() {
-  return new Promise((resolve) => {
-    let voices = window.speechSynthesis.getVoices();
-    if (voices.length) {
-      resolve(voices);
-    } else {
-      window.speechSynthesis.onvoiceschanged = () => {
-        voices = window.speechSynthesis.getVoices();
-        resolve(voices);
-      };
-    }
-  });
-}
-
-async function init() {
-  const voices = await loadVoices();
-  maleVoice = voices.find(voice => voice.name.includes("Google UK English Male") || voice.name.includes("Daniel") || voice.name.includes("en-GB"));
-}
-
-init();
-
-startButton.onclick = () => {
-  output.textContent = "Greeting you...";
-  const greeting = "Hello, I am Jarvis. How can I assist you?";
-  speak(greeting, () => {
-    output.textContent = "Listening...";
-    recognition.start();
-  });
-};
-
-recognition.onresult = (event) => {
+// Main logic
+recognition.onresult = function (event) {
   const transcript = event.results[0][0].transcript.toLowerCase();
-  console.log('Heard:', transcript);
-  output.textContent = "Heard: " + transcript;
+  console.log("You said:", transcript);
 
   if (transcript.includes("jarvis")) {
-    let reply = "I'm here. What can I do for you?";
-
-    if (transcript.includes("time")) {
-      const now = new Date();
-      reply = "The current time is " + now.toLocaleTimeString();
-    } else if (transcript.includes("battery")) {
-      reply = "I cannot check your battery on this device. Sorry.";
-    } else if (transcript.includes("youtube")) {
-      reply = "Opening YouTube now.";
-      window.open("https://www.youtube.com", "_blank");
-    } else if (transcript.includes("hello")) {
-      reply = "Hello there. Good to see you.";
-    } else if (!transcript.includes("time") && !transcript.includes("battery") && !transcript.includes("youtube")) {
-      reply = "I'm sorry, I didn't catch a command. Try asking the time or say open YouTube.";
-    }
-
-    output.textContent = reply;
-    speakButton.onclick = () => speak(reply);
+    speak("Yes, I’m here. What do you need?");
+  } else if (transcript.includes("what's the date")) {
+    const date = new Date().toLocaleDateString();
+    speak("Today is " + date);
+  } else if (transcript.includes("what's the weather")) {
+    speak("I’ll need to connect to a weather service for that.");
+    // Add fetch for real weather later
+  } else if (transcript.includes("play music")) {
+    speak("Opening Spotify...");
+    window.open("https://open.spotify.com", "_blank");
+  } else if (transcript.includes("take a note")) {
+    speak("What should I write?");
+    // You can trigger another recognition session to capture the note
   } else {
-    output.textContent = "Wake word 'Jarvis' not detected.";
+    speak("I'm not sure how to respond to that yet.");
   }
 };
 
-function speak(text, callback = null) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  if (maleVoice) utterance.voice = maleVoice;
-  if (callback) utterance.onend = callback;
-  window.speechSynthesis.speak(utterance);
-}
+// Optional: Handle errors
+recognition.onerror = function (event) {
+  console.error("Speech recognition error:", event.error);
+  speak("Sorry, I didn't catch that.");
+};
