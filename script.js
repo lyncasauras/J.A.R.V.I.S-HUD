@@ -85,3 +85,6 @@ recognition.onresult = function (event) {
 recognition.onerror = function (event) {
   console.error("Speech recognition error:", event.error);
   speak("Sorry, I didn't catch that
+window.onload = () => {
+  speak("JARVIS online. How can I assist?");
+};
