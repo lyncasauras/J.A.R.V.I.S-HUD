@@ -10,7 +10,7 @@ function speak(text) {
     synth.speak(utterance);
 }
 
-// Store the main handler so we can restore it later
+// Store the main handler
 let mainHandler;
 
 document.getElementById("mic-btn").addEventListener("click", () => {
@@ -18,7 +18,6 @@ document.getElementById("mic-btn").addEventListener("click", () => {
     recognition.start();
 });
 
-// Main command handler
 mainHandler = function(event) {
     const command = event.results[0][0].transcript.toLowerCase();
     console.log("Command:", command);
@@ -32,12 +31,14 @@ mainHandler = function(event) {
         const now = new Date();
         const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         speak("The time is " + timeString);
+    } else if (command.includes("chatgpt")) {
+        speak("Ask me anything. I'm listening.");
+        waitForChatGPTCommand();
     } else {
         getChatGPTResponse(command);
     }
 };
 
-// Assign the main handler
 recognition.onresult = mainHandler;
 
 function askForCity() {
@@ -48,7 +49,19 @@ function askForCity() {
         recognition.onresult = function(e) {
             const city = e.results[0][0].transcript;
             getWeather(city);
-            recognition.onresult = mainHandler;  // Restore normal command handler
+            recognition.onresult = mainHandler;
+        };
+        recognition.start();
+    }, 1000);
+}
+
+function waitForChatGPTCommand() {
+    recognition.stop();
+    setTimeout(() => {
+        recognition.onresult = function(e) {
+            const followUp = e.results[0][0].transcript;
+            getChatGPTResponse(followUp);
+            recognition.onresult = mainHandler;
         };
         recognition.start();
     }, 1000);
