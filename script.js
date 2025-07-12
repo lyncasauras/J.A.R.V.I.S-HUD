@@ -1,27 +1,32 @@
-speechSynthesis.onvoiceschanged = loadVoices;// Load available voices
+// Load voices when available
 let voices = [];
 
 function loadVoices() {
   voices = speechSynthesis.getVoices();
   if (!voices.length) {
-    setTimeout(loadVoices, 100); // Retry if not ready
+    setTimeout(loadVoices, 100);
   }
 }
+speechSynthesis.onvoiceschanged = loadVoices;
 loadVoices();
 
-// Speak function with natural tone
+// Speak in natural tone
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.pitch = 1.1;
   utterance.rate = 0.95;
   utterance.volume = 1;
-  utterance.voice = voices.find(v => v.name.includes("UK") || v.name.includes("Male")) || voices[0];
+
+  if (voices.length > 0) {
+    utterance.voice = voices.find(v => v.name.includes("UK") || v.name.includes("Male")) || voices[0];
+  }
+
   speechSynthesis.speak(utterance);
 }
 
-// Get weather based on spoken city
+// Fetch weather for spoken city
 async function getWeather(city) {
-  const apiKey = "YOUR_API_KEY_HERE"; // ← Replace this with your OpenWeatherMap API key
+  const apiKey = "YOUR_API_KEY_HERE"; // Replace with your OpenWeatherMap key
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
   try {
@@ -41,19 +46,20 @@ async function getWeather(city) {
   }
 }
 
-// Voice recognition
+// Voice recognition setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
 recognition.continuous = false;
 recognition.interimResults = false;
 recognition.lang = 'en-US';
 
-// Trigger recognition manually
+// Handle mic button
 document.getElementById("mic-btn").addEventListener("click", () => {
+  speak("JARVIS online. How can I assist?");
   recognition.start();
 });
 
-// Main logic
+// Voice command logic
 recognition.onresult = function (event) {
   const transcript = event.results[0][0].transcript.toLowerCase();
   console.log("You said:", transcript);
@@ -82,9 +88,8 @@ recognition.onresult = function (event) {
   }
 };
 
+// Handle errors
 recognition.onerror = function (event) {
   console.error("Speech recognition error:", event.error);
-  speak("Sorry, I didn't catch that
-window.onload = () => {
-  speak("JARVIS online. How can I assist?");
+  speak("Sorry, I didn't catch that.");
 };
