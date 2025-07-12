@@ -4,48 +4,55 @@ recognition.lang = 'en-US';
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-let originalHandler;
-
 function speak(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     synth.speak(utterance);
 }
 
+// Store the main handler so we can restore it later
+let mainHandler;
+
 document.getElementById("mic-btn").addEventListener("click", () => {
     speak("JARVIS online. How can I assist?");
     recognition.start();
 });
 
-// Set up main command handler
-originalHandler = function(event) {
+// Main command handler
+mainHandler = function(event) {
     const command = event.results[0][0].transcript.toLowerCase();
     console.log("Command:", command);
 
     if (command.includes("weather")) {
-        speak("Which city do you want the weather for?");
-        recognition.stop();
-
-        recognition.onresult = function(e) {
-            const city = e.results[0][0].transcript;
-            getWeather(city);
-            recognition.onresult = originalHandler;
-        };
-
-        setTimeout(() => {
-            recognition.start();
-        }, 1000);
-
+        askForCity();
     } else if (command.includes("date")) {
         const today = new Date();
         speak("Today is " + today.toDateString());
-
+    } else if (command.includes("time")) {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        speak("The time is " + timeString);
     } else {
         getChatGPTResponse(command);
     }
 };
 
-recognition.onresult = originalHandler;
+// Assign the main handler
+recognition.onresult = mainHandler;
+
+function askForCity() {
+    speak("Which city do you want the weather for?");
+    recognition.stop();
+
+    setTimeout(() => {
+        recognition.onresult = function(e) {
+            const city = e.results[0][0].transcript;
+            getWeather(city);
+            recognition.onresult = mainHandler;  // Restore normal command handler
+        };
+        recognition.start();
+    }, 1000);
+}
 
 function getWeather(city) {
     const apiKey = "b25a1506b57267db6bc688d256b1e6fa";
