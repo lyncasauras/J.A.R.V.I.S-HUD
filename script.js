@@ -4,6 +4,8 @@ recognition.lang = 'en-US';
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
+let originalHandler;
+
 function speak(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
@@ -15,24 +17,38 @@ document.getElementById("mic-btn").addEventListener("click", () => {
     recognition.start();
 });
 
-recognition.onresult = (event) => {
+// Set up main command handler
+originalHandler = function(event) {
     const command = event.results[0][0].transcript.toLowerCase();
     console.log("Command:", command);
 
     if (command.includes("weather")) {
         speak("Which city do you want the weather for?");
-        recognition.onresult = (e) => {
+        recognition.stop();
+
+        recognition.onresult = function(e) {
             const city = e.results[0][0].transcript;
             getWeather(city);
+
+            // Restore original handler
+            recognition.onresult = originalHandler;
         };
-        recognition.start();
+
+        // Restart recognition after short pause
+        setTimeout(() => {
+            recognition.start();
+        }, 1000);
+
     } else if (command.includes("date")) {
         const today = new Date();
         speak("Today is " + today.toDateString());
+
     } else {
         getChatGPTResponse(command);
     }
 };
+
+recognition.onresult = originalHandler;
 
 function getWeather(city) {
     const apiKey = "b25a1506b57267db6bc688d256b1e6fa";
