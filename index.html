@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iron Man Hologram</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: sans-serif;
+    }
+    #launch {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 12px 20px;
+      background: rgba(0, 255, 255, 0.2);
+      border: 1px solid cyan;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="launch">Project Iron Man</div>
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.157.0/examples/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from 'https://unpkg.com/three@0.157.0/examples/jsm/loaders/GLTFLoader.js';
+
+    let scene, camera, renderer, controls;
+
+    const init = () => {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 1.5, 3);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      const light = new THREE.AmbientLight(0x00ffff, 2);
+      scene.add(light);
+
+      const gridHelper = new THREE.GridHelper(10, 20, 0x00ffff, 0x003333);
+      scene.add(gridHelper);
+
+      const loader = new GLTFLoader();
+      loader.load(
+        'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AnimatedCube/glTF/AnimatedCube.gltf',
+        gltf => {
+          const model = gltf.scene;
+          model.traverse(obj => {
+            if (obj.isMesh) {
+              obj.material.wireframe = true;
+              obj.material.color.set(0x00ffff);
+              obj.material.emissive.set(0x003344);
+            }
+          });
+          scene.add(model);
+        },
+        undefined,
+        err => console.error('Model loading error:', err)
+      );
+    };
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+
+    document.getElementById('launch').addEventListener('click', () => {
+      document.getElementById('launch').style.display = 'none';
+      init();
+      animate();
+    });
+
+    window.addEventListener('resize', () => {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
