@@ -10,12 +10,16 @@ function speak(text) {
     synth.speak(utterance);
 }
 
-// Store the main handler
+// Greet only once when page loads
+window.onload = () => {
+    speak("System check complete. JARVIS ready.");
+};
+
+// Store main handler
 let mainHandler;
 
 document.getElementById("mic-btn").addEventListener("click", () => {
-    speak("JARVIS online. How can I assist?");
-    recognition.start();
+    recognition.start(); // No repeat greeting
 });
 
 mainHandler = function(event) {
@@ -97,17 +101,4 @@ async function getChatGPTResponse(message) {
                 "Authorization": "Bearer b25a1506b57267db6bc688d256b1e6fa"
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [{ role: "user", content: message }]
-            })
-        });
-        const data = await response.json();
-        const reply = data.choices[0].message.content;
-        speak(reply);
-    } catch (error) {
-        console.error(error);
-        speak("Sorry, I couldn't reach ChatGPT.");
-    }
-}
-
-speak("System check complete. JARVIS ready.");
+                model: "gpt-
