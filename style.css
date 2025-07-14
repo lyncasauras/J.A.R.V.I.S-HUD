@@ -1,0 +1,40 @@
+
+body {
+  background-color: black;
+  color: cyan;
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  padding-top: 30px;
+}
+button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  background-color: #00ffee;
+  border: none;
+  border-radius: 10px;
+  color: black;
+  cursor: pointer;
+}
+.hud-center {
+  position: relative;
+  display: inline-block;
+  margin-top: 30px;
+}
+#suit-hologram {
+  width: 300px;
+  filter: drop-shadow(0 0 20px cyan);
+  animation: flicker 1.5s infinite alternate;
+}
+.diagnostics {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  text-align: left;
+  color: cyan;
+  font-size: 1rem;
+  text-shadow: 0 0 6px cyan;
+}
+@keyframes flicker {
+  from { opacity: 0.9; }
+  to { opacity: 1; }
+}
