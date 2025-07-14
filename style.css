@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  background-color: black;
+  overflow: hidden;
+}
+#ironman-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  padding: 10px;
+  background: #003333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+#canvas-container {
+  width: 100vw;
+  height: 100vh;
+}
