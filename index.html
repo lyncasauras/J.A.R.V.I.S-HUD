@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>J.A.R.V.I.S HUD 3D</title>
+  <style>
+    body { margin: 0; background-color: black; overflow: hidden; }
+    canvas { display: block; }
+    #instructions {
+      position: absolute; top: 10px; left: 10px;
+      color: cyan; background: rgba(0,0,0,0.5);
+      padding: 10px; font-family: monospace;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">Tap a part of Iron Man to zoom in. Say "zoom into arc reactor".</div>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
