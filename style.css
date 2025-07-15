@@ -1,0 +1,43 @@
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #00111a, #000000);
+  font-family: 'Segoe UI', sans-serif;
+  color: cyan;
+  overflow-x: hidden;
+}
+#greeting {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.5em;
+}
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+.circle-button {
+  flex: 0 0 auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid cyan;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9em;
+  text-align: center;
+  box-shadow: 0 0 10px cyan;
+  cursor: pointer;
+  background-color: rgba(0, 255, 255, 0.1);
+}
+.circle-button:hover {
+  box-shadow: 0 0 20px cyan;
+}
+.response-box {
+  text-align: center;
+  padding: 20px;
+  min-height: 60px;
+}

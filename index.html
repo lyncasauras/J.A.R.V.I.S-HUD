@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JARVIS HOLOMAT</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="greeting">Initializing J.A.R.V.I.S...</div>
+  <div class="scroll-container">
+    <div class="circle-button" onclick="launchModule('weather')">Weather</div>
+    <div class="circle-button" onclick="launchModule('music')">Music</div>
+    <div class="circle-button" onclick="launchModule('notes')">Notes</div>
+    <div class="circle-button" onclick="launchModule('projects')">Projects</div>
+    <div class="circle-button" onclick="launchModule('system')">System Info</div>
+    <div class="circle-button" onclick="launchModule('experiments')">Experiments</div>
+  </div>
+  <div id="response" class="response-box"></div>
+  <script src="script.js"></script>
+</body>
+</html>
