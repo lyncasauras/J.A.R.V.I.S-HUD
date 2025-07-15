@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>J.A.R.V.I.S HOLOMAT HUD</title>
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+            font-family: 'Segoe UI', sans-serif;
+            color: cyan;
+            text-align: center;
+            margin: 0;
+            padding: 2em;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 1em;
+            color: #00ffff;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1em;
+            max-width: 800px;
+            margin: auto;
+        }
+        .btn {
+            background-color: rgba(0, 255, 255, 0.1);
+            border: 1px solid cyan;
+            border-radius: 10px;
+            padding: 1em;
+            font-size: 1em;
+            color: white;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: rgba(0, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Initializing J.A.R.V.I.S...</h1>
+    <div class="button-grid">
+        <div class="btn" onclick="speak('Today is ' + new Date().toDateString())">📅 Time & Date</div>
+        <div class="btn" onclick="speak('Fetching weather...')">🌤️ Weather</div>
+        <div class="btn" onclick="speak('Playing music...')">🎵 Music</div>
+        <div class="btn" onclick="speak('Ready to take notes.')">📝 Notes</div>
+        <div class="btn" onclick="speak('Displaying system info...')">💻 System Info</div>
+        <div class="btn" onclick="speak('Launching experiments...')">🧪 Experiments</div>
+    </div>
+    <script>
+        const synth = window.speechSynthesis;
+        function speak(text) {
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.voice = synth.getVoices().find(voice => voice.name.includes("Google UK English Male")) || synth.getVoices()[0];
+            synth.speak(utter);
+        }
+
+        window.onload = () => {
+            speak("Welcome back. JARVIS system online and ready.");
+            setTimeout(() => suggestAction(), 6000);
+        };
+
+        function suggestAction() {
+            const actions = [
+                "Would you like to check the weather?",
+                "Need to make a note?",
+                "Want me to play your music?",
+                "Shall I read the date and time?"
+            ];
+            const suggestion = actions[Math.floor(Math.random() * actions.length)];
+            speak(suggestion);
+        }
+    </script>
+</body>
+</html>
