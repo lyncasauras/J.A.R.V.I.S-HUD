@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS HOLOMAT HUD</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="hud">
+    <div class="emblem">J</div>
+    <div class="menu-scroll">
+      <button onclick="openModule('time')">Time</button>
+      <button onclick="openModule('weather')">Weather</button>
+      <button onclick="openModule('music')">Music</button>
+      <button onclick="openModule('notes')">Notes</button>
+      <button onclick="openModule('projects')">Projects</button>
+      <button onclick="openModule('experiments')">Experiments</button>
+    </div>
+    <div id="module-container" class="module-screen hidden">
+      <button onclick="closeModule()">Back to Menu</button>
+      <div id="module-content">Loading...</div>
+    </div>
+    <audio id="jarvis-voice" src="jarvis_greeting.mp3" autoplay></audio>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
