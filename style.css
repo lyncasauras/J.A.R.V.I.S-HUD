@@ -1,0 +1,11 @@
+/* style.css */
+body {
+  background-color: black;
+  color: cyan;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
